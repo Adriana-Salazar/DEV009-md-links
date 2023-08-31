@@ -89,6 +89,15 @@ function mdLinks(rutePath, validate) {
   });
 }
 
+/*mdLinks("./Guiaweb.md")
+  .then((links) => {
+    // => [{ href, text, file }, ...]
+    console.log("Enlaces encontrados:", links);
+  })
+  .catch((error) => {
+    console.log("Error:", error.message);
+  });*/
+
 mdLinks("./Guiaweb.md", true)
   .then((links) => {
     // => [{ href, text, file }, ...]
@@ -97,6 +106,15 @@ mdLinks("./Guiaweb.md", true)
   .catch((error) => {
     console.log("Error:", error.message);
   });
+
+  /*mdLinks("./Guiaweb.md", false)
+  .then((links) => {
+    // => [{ href, text, file }, ...]
+    console.log("Enlaces encontrados:", links);
+  })
+  .catch((error) => {
+    console.log("Error:", error.message);
+  });*/
 
 //console.log(path.join(__dirname, "./README.js"))
 

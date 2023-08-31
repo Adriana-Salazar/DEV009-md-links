@@ -58,4 +58,8 @@ Aplica tus conocimientos construyendo proyectos web. Inicia con proyectos peque�
 - [Stack Overflow](https://stackoverflow.com/)
 - [GitHub](https://github.com/)
 
+## Enlace Roto
+
+[Aquí tienes un enlace roto](https://www.enlace-ficticio-roto.com)
+
 ¡Este es solo el comienzo de tu viaje como programador web! A medida que adquieras más experiencia, podrás explorar frameworks y tecnologías avanzadas para crear aplicaciones web más sofisticadas. ¡Buena suerte y diviértete programando!
