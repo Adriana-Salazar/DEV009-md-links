@@ -89,14 +89,14 @@ function mdLinks(rutePath, validate) {
   });
 }
 
-/*mdLinks("./Guiaweb.md")
+mdLinks("./Guiaweb.md")
   .then((links) => {
     // => [{ href, text, file }, ...]
     console.log("Enlaces encontrados:", links);
   })
   .catch((error) => {
     console.log("Error:", error.message);
-  });*/
+  });
 
 mdLinks("./Guiaweb.md", true)
   .then((links) => {
