@@ -1,15 +1,16 @@
+const path = require('path');
 const mdLinks = require('./mdlinks.js')
 
-mdLinks("./Guiaweb.md")
+/*mdLinks("./docs/06-guiaweb02.md")
   .then((links) => {
     // => [{ href, text, file }, ...]
     console.log("Enlaces encontrados:", links);
   })
   .catch((error) => {
     console.log("Error:", error.message);
-  });
+  });*/
 
-mdLinks("./Guiaweb.md", true)
+mdLinks("./docs/06-guiaweb02.md", true)
   .then((links) => {
     // => [{ href, text, file }, ...]
     console.log("Enlaces encontrados:", links);

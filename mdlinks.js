@@ -1,12 +1,8 @@
-const fs = require("fs");
-const path = require("path");
-const md = require("markdown-it")(); 
+const fs = require('fs');
+const path = require('path');
+const md = require("markdown-it")();
 const { parse } = require("node-html-parser"); // Librería para parsear HTML
-const {isMarkdownFile,
-  readingFile,
-  validateLinks,} = require('./data.js');
-
-
+const { isMarkdownFile, readingFile, validateLinks, readdirFiles } = require("./data.js");
 
 function mdLinks(rutePath, validate) {
   return new Promise((resolve, reject) => {
@@ -51,6 +47,9 @@ function mdLinks(rutePath, validate) {
             } else {
               resolve(links);
             }
+            const directoryPath = path.join(__dirname);
+            const filesInDirectory = readdirFiles(directoryPath);
+            //readdirFiles(filesInDirectory);
           })
           .catch((error) => {
             reject(error);
@@ -58,6 +57,6 @@ function mdLinks(rutePath, validate) {
       }
     }
   });
-}
+};
 
 module.exports = mdLinks;
