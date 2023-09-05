@@ -1,4 +1,4 @@
-const mdLinks = require("../index.js");
+const mdLinks = require("../mdlinks.js");
 const axios = require('axios');
 
 jest.mock('axios');
@@ -27,19 +27,6 @@ describe("mdLinks", () => {
       expect(links[0]).toHaveProperty("file");
     });
   });
-  /*it("deberia validar los links cuando el atributo validate = true", () => {
-    axios.get.mockResolvedValue({ status: 200 });
-    return mdLinks('./Guiaweb.md')
-      .then(links => {
-        expect(links).toHaveLength(17);
-      });  
-  }); 
-  it("No deberia validar los links cuando el atributo validate = false", () => {
-    axios.get.mockResolvedValue({ status: 404 });
-    return mdLinks('./Guiaweb.md').then(links => {
-      expect(links).toHaveLength(17);
-    });
-  });*/
   it("deberia validar los links cuando el atributo validate = true", () => {
     const response = { status: 200 }; // Simulamos una respuesta exitosa
     axios.get.mockResolvedValue(response);
@@ -63,8 +50,7 @@ describe("mdLinks", () => {
       .then(links => {
         expect(links).toHaveLength(17);
     
-        links.forEach(link => {
-            // Verifica que las propiedades básicas estén presentes
+        links.forEach(link => {            
             expect(link).toHaveProperty("href");
             expect(link).toHaveProperty("text");
             expect(link).toHaveProperty("file");
