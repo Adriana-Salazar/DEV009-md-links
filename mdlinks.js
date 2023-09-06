@@ -1,62 +1,76 @@
-const fs = require('fs');
-const path = require('path');
+const fs = require("fs");
+const path = require("path");
 const md = require("markdown-it")();
 const { parse } = require("node-html-parser"); // Librería para parsear HTML
-const { isMarkdownFile, readingFile, validateLinks, readdirFiles } = require("./data.js");
+const {
+  isMarkdownFile,
+  readingFile,
+  validateLinks,
+  readdirFiles,
+} = require("./data.js");
 
-function mdLinks(rutePath, validate) {
-  return new Promise((resolve, reject) => {
-    const absolutePath = path.resolve(rutePath);
-    if (!fs.existsSync(absolutePath)) {
-      reject(new Error("La ruta no existe"));
-    } else {
-      if (!isMarkdownFile(absolutePath)) {
-        reject(new Error("El archivo no es de tipo Markdown"));
-      } else {
-        // Si es un archivo markdown, lee el archivo
-        readingFile(absolutePath)
-          .then((data) => {
-            const htmlContent = md.render(data); // Convierte el Markdown a HTML
-            const root = parse(htmlContent); // Parsea el HTML con node-html-parser
-            const links = [];
+function mdLinks(directoryPath, validate) {
+  const absolutePath = path.resolve(directoryPath);
+  if (!fs.existsSync(absolutePath)) {
+    return Promise.reject(new Error("La ruta no existe"));
+  }
 
-            root.querySelectorAll("a").forEach((anchor) => {
-              links.push({
-                href: anchor.getAttribute("href"),
-                text: anchor.text,
-                file: absolutePath,
-              });
-            });
+  const filesInDirectory = readdirFiles(absolutePath);
 
-            if (validate) {
-              const validatePromises = links.map((link) => {
-                return validateLinks(link.href) // Pasa link.href como la URL a validar
+  const linksPromises = [];
+
+  for (const filePath of filesInDirectory) {
+    const fullFilePath = path.join(absolutePath, filePath);
+
+    if (fs.existsSync(fullFilePath) && isMarkdownFile(filePath)) {
+      const linkPromise = readingFile(fullFilePath)
+        .then((fileContent) => {
+          const htmlContent = md.render(fileContent);
+          const root = parse(htmlContent);
+
+          const links = root.querySelectorAll("a").map((anchor) => ({
+            href: anchor.getAttribute("href"),
+            text: anchor.text,
+            file: fullFilePath,
+          }));
+
+          if (validate) {
+            return Promise.all(
+              links.map((link) =>
+                validateLinks(link.href)
                   .then((validationResult) =>
                     Object.assign(link, validationResult)
                   )
-                  .catch((error) => {
+                  .catch(() => {
                     link.status = "Error";
                     link.ok = "fail";
                     return link;
-                  });
-              });
+                  })
+              )
+            );
+          }
 
-              Promise.all(validatePromises)
-                .then((validatedLinks) => resolve(validatedLinks))
-                .catch((error) => reject(error));
-            } else {
-              resolve(links);
-            }
-            const directoryPath = path.join(__dirname);
-            const filesInDirectory = readdirFiles(directoryPath);
-            //readdirFiles(filesInDirectory);
-          })
-          .catch((error) => {
-            reject(error);
-          });
-      }
+          return links;
+        })
+        .catch((error) => {
+          console.error(`Error al procesar ${fullFilePath}: ${error.message}`);
+          return [];
+        });
+
+      linksPromises.push(linkPromise);
+    } else {
+      console.error(`Error: ${fullFilePath} no es un archivo Markdown`);
     }
-  });
-};
+  }
+
+  return Promise.all(linksPromises)
+    .then((results) => {
+      const links = results.reduce((acc, current) => acc.concat(current), []);
+      return links;
+    })
+    .catch((error) => {
+      return Promise.reject(error);
+    });
+}
 
 module.exports = mdLinks;

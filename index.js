@@ -1,16 +1,15 @@
-const path = require('path');
-const mdLinks = require('./mdlinks.js')
+const mdLinks = require("./mdlinks.js");
 
-/*mdLinks("./docs/06-guiaweb02.md")
+/*mdLinks("./prueba")
   .then((links) => {
     // => [{ href, text, file }, ...]
-    console.log("Enlaces encontrados:", links);
+    console.log("Links encontrados:", links);
   })
   .catch((error) => {
     console.log("Error:", error.message);
   });*/
 
-mdLinks("./docs/06-guiaweb02.md", true)
+mdLinks("./prueba", true)
   .then((links) => {
     // => [{ href, text, file }, ...]
     console.log("Enlaces encontrados:", links);
@@ -19,7 +18,7 @@ mdLinks("./docs/06-guiaweb02.md", true)
     console.log("Error:", error.message);
   });
 
-  /*mdLinks("./Guiaweb.md", false)
+/*mdLinks("./Guiaweb.md", false)
   .then((links) => {
     // => [{ href, text, file }, ...]
     console.log("Enlaces encontrados:", links);
@@ -28,4 +27,4 @@ mdLinks("./docs/06-guiaweb02.md", true)
     console.log("Error:", error.message);
   });*/
 
-
+//console.log(path.join(__dirname, "./docs"))

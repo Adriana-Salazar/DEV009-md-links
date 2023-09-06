@@ -1,24 +1,38 @@
-const fs = require('fs');
-const path = require('path');
+const fs = require("fs");
+const path = require("path");
 const axios = require("axios");
 
-//let files = fs.readdirSync("./docs");
-function isMarkdownFile(rutePath) {
-  return path.extname(rutePath) === ".md";
+//Funcion que valida si el archivo es tipo markdown
+function isMarkdownFile(filePath) {
+  const markdownExtensions = [
+    ".md",
+    ".mkd",
+    ".mdwn",
+    ".mdown",
+    ".mdtxt",
+    ".mdtext",
+    ".markdown",
+    ".text",
+  ];
+  const fileExtension = path.extname(filePath);
+  return markdownExtensions.includes(fileExtension);
 }
 
-function readingFile(path) {
+//Funcion para leer los archivos
+function readingFile(filePath) {
   return new Promise((resolve, reject) => {
-    fs.readFile(path, "utf8", (err, data) => {
+    fs.readFile(filePath, "utf8", (err, data) => {
       if (err) {
         reject(err);
       } else {
+        console.log(`Contenido de ${filePath}:`, data);
         resolve(data);
       }
     });
   });
 }
 
+//Funcion para validar los links y mostrar los status
 function validateLinks(url) {
   return axios
     .get(url)
@@ -36,6 +50,7 @@ function validateLinks(url) {
     });
 }
 
+//Funcion para leer directorios y listar sus archivos
 function readdirFiles(directoryPath) {
   try {
     //const filePath = path.join(__dirname, directoryPath);
@@ -46,18 +61,11 @@ function readdirFiles(directoryPath) {
     return []; // En caso de error, devuelve un array vacío
   }
 }
+
 //console.log(path.join(__dirname, "./docs/milestone.md"))
 
-/*readdirFiles('./docs', (err, files) => {
-    if (err) {
-      console.error('Error:', err);
-    } else {
-      console.log('Contenido del directorio:', files);
-    }
-  });*/
-
-const directory = readdirFiles("./docs");
-console.log("Contenido del directorio:", directory);
+//directory = readdirFiles("./prueba");
+//console.log("Contenido del directorio:", directory);
 
 module.exports = {
   isMarkdownFile,
