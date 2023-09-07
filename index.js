@@ -9,7 +9,7 @@ const mdLinks = require("./mdlinks.js");
     console.log("Error:", error.message);
   });*/
 
-mdLinks("./prueba/fundamentos", true)
+mdLinks("./prueba", true)
   .then((links) => {
     // => [{ href, text, file }, ...]
     console.log("Enlaces encontrados:", links);

@@ -15,62 +15,67 @@ function mdLinks(directoryPath, validate) {
     return Promise.reject(new Error("La ruta no existe"));
   }
 
-  const filesInDirectory = readdirFiles(absolutePath);
+  function processDirectory(dir) {
+    const filesInDirectory = readdirFiles(dir);
+    const linksPromises = [];
 
-  const linksPromises = [];
+    for (const filePath of filesInDirectory) {
+      const fullFilePath = path.join(dir, filePath);
 
-  for (const filePath of filesInDirectory) {
-    const fullFilePath = path.join(absolutePath, filePath);
+      if (fs.existsSync(fullFilePath) && isMarkdownFile(filePath)) {
+        const linkPromise = readingFile(fullFilePath)
+          .then((fileContent) => {
+            const htmlContent = md.render(fileContent);
+            const root = parse(htmlContent);
 
-    if (fs.existsSync(fullFilePath) && isMarkdownFile(filePath)) {
-      const linkPromise = readingFile(fullFilePath)
-        .then((fileContent) => {
-          const htmlContent = md.render(fileContent);
-          const root = parse(htmlContent);
+            const links = root.querySelectorAll("a").map((anchor) => ({
+              href: anchor.getAttribute("href"),
+              text: anchor.text,
+              file: fullFilePath,
+            }));
 
-          const links = root.querySelectorAll("a").map((anchor) => ({
-            href: anchor.getAttribute("href"),
-            text: anchor.text,
-            file: fullFilePath,
-          }));
+            if (validate) {
+              return Promise.all(
+                links.map((link) =>
+                  validateLinks(link.href)
+                    .then((validationResult) =>
+                      Object.assign(link, validationResult)
+                    )
+                    .catch(() => {
+                      link.status = "Error";
+                      link.ok = "fail";
+                      return link;
+                    })
+                )
+              );
+            }
 
-          if (validate) {
-            return Promise.all(
-              links.map((link) =>
-                validateLinks(link.href)
-                  .then((validationResult) =>
-                    Object.assign(link, validationResult)
-                  )
-                  .catch(() => {
-                    link.status = "Error";
-                    link.ok = "fail";
-                    return link;
-                  })
-              )
-            );
-          }
+            return links;
+          })
+          .catch((error) => {
+            console.error(`Error al procesar ${fullFilePath}: ${error.message}`);
+            return [];
+          });
 
-          return links;
-        })
-        .catch((error) => {
-          console.error(`Error al procesar ${fullFilePath}: ${error.message}`);
-          return [];
-        });
-
-      linksPromises.push(linkPromise);
-    } else {
-      console.error(`Error: ${fullFilePath} no es un archivo Markdown`);
+        linksPromises.push(linkPromise);
+      } else if (fs.statSync(fullFilePath).isDirectory()) {
+        linksPromises.push(processDirectory(fullFilePath)); // Nueva recursión para directorios
+      } else {
+        console.error(`Error: ${fullFilePath} no es un archivo Markdown`);
+      }
     }
+
+    return Promise.all(linksPromises)
+      .then((results) => {
+        const links = results.reduce((acc, current) => acc.concat(current), []);
+        return links;
+      })
+      .catch((error) => {
+        return Promise.reject(error);
+      });
   }
 
-  return Promise.all(linksPromises)
-    .then((results) => {
-      const links = results.reduce((acc, current) => acc.concat(current), []);
-      return links;
-    })
-    .catch((error) => {
-      return Promise.reject(error);
-    });
+  return processDirectory(absolutePath); // Inicia la recursión desde el directorio raíz
 }
 
 module.exports = mdLinks;
