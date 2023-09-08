@@ -9,3 +9,8 @@ Antes de sumergirte en el desarrollo web, es crucial entender algunos conceptos 
 - [Introducción a la Web](https://developer.mozilla.org/es/docs/Learn/Getting_started_with_the_web/Introducci%C3%B3n)
 - [¿Qué es HTML?](https://developer.mozilla.org/es/docs/Learn/Getting_started_with_the_web/HTML_basics)
 - [Conceptos básicos de CSS](https://developer.mozilla.org/es/docs/Learn/Getting_started_with_the_web/CSS_basics)
+
+
+
+
+- [Ideas de Proyectos para Principiantes](https://www.upgrad.com/blog/proyectos-de-programacion-para-principiantes/)

@@ -2,6 +2,6 @@
 
 Aplica tus conocimientos construyendo proyectos web. Inicia con proyectos pequeños como una página personal o una calculadora:
 
-- [Ideas de Proyectos para Principiantes](https://www.upgrad.com/blog/proyectos-de-programacion-para-principiantes/)
+
 
 
