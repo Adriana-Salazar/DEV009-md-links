@@ -52,13 +52,39 @@ function validateLinks(url) {
 //Funcion para leer directorios y listar sus archivos
 function readdirFiles(directoryPath) {
   try {
-    //const filePath = path.join(__dirname, directoryPath);
-    const files = fs.readdirSync(directoryPath);
-    return files;
+    const items = fs.readdirSync(directoryPath);
+    
+    const files = [];
+    const directories = [];
+
+    for (const item of items) {
+      const itemPath = path.join(directoryPath, item);
+      const stats = fs.statSync(itemPath);
+
+      if (stats.isDirectory()) {
+        directories.push(item);
+      } else {
+        files.push(item);
+      }
+    }
+
+    return {
+      files,
+      directories,
+    };
   } catch (error) {    
-    return []; // En caso de error, devuelve un array vacío
+    return {
+      files: [],
+      directories: [],
+    };
   }
 }
+
+const directoryPath = './prueba';
+const result = readdirFiles(directoryPath);
+
+console.log('Archivos:', result.files);
+console.log('Subdirectorios:', result.directories);
 
 module.exports = {
   isMarkdownFile,

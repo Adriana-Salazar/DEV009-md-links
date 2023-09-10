@@ -1,33 +1,108 @@
-/*const mdLinks = require("../mdlinks.js");
-const { validateLinks, readingFile, readdirFiles } = require("../data.js");
-const axios = require("axios")
+const {
+  isMarkdownFile,
+  validateLinks,
+  readingFile,
+  readdirFiles,
+} = require("../data.js");
+const axios = require("axios");
 
+jest.mock("axios");
 
-
-describe("validateLinks", () => {
-  it("debería retornar un objeto con status 'No Response' si no hay respuesta", () => {
-  const noResponse = { status: 404 };
-  axios.get.mockRejectedValue(noResponse);
-
-    return validateLinks("https://www.enlace-ficticio-roto.com").then((error) => {
-      expect(error).toEqual({
-      status: "No Response",
-      ok: "fail",
-      });
-    });
+describe("isMarkdownFile", () => {
+  it("debería devolver true para archivos markdown", () => {
+    // Prueba con diferentes extensiones de archivos markdown
+    expect(isMarkdownFile("guia.md")).toBe(true);
+    expect(isMarkdownFile("aprende.mdown")).toBe(true);
+    expect(isMarkdownFile("07-milestone.text")).toBe(true);
+  });
+  it("debería devolver false para archivos no markdown", () => {
+    // Prueba con archivos que no son markdown
+    expect(isMarkdownFile("data.js")).toBe(false);
   });
 });
 
 describe("readingFile", () => {
   it("debe arrojar error si no logra leer el archivo tipo Markdown", () => {
-    return readingFile("./README.md").catch((err) => {
+    return readingFile(".prueba2/novalido.md").catch((err) => {
       expect(err).toBeDefined();
     });
   });
-});  
+  it("debe leer el archivo", () => {
+    const filePath = "./prueba2/practicar.md"; // Reemplaza con la ruta correcta a un archivo existente
+    const expectedContent = "## Práctica Constante";
+    ("La práctica es clave para mejorar. Aquí tienes algunas plataformas donde puedes practicar tus habilidades:");
+    ("- [freeCodeCamp](https://www.freecodecamp.org/)·");
+    ("- [Codewars](https://www.codewars.com/)·");
+    ("- [LeetCode](https://leetcode.com/)·");
 
+    return readingFile(filePath).then((data) => {
+      expect(data).toMatch(expectedContent); //toMatch() verificar que el contenido del archivo contenga la cadena esperada, sin necesidad de coincidencia exacta en formato y espaciado
+    });
+  });
+});
 
-describe('readdirFiles', () => {
+/*describe("validateLinks", () => {
+  it("deberia validar los links cuando el atributo validate = true", () => {
+    const response = { status: 200 }; // Simulamos una respuesta exitosa
+    axios.get.mockResolvedValue(response);
+
+    return validateLinks("./prueba2/practicar.md", true).then((links) => {
+      expect(links).toHaveLength(3);
+
+      links.forEach((link) => {
+      // Verifica que las propiedades necesarias estén presentes
+        expect(link).toHaveProperty("href");
+        expect(link).toHaveProperty("text");
+        expect(link).toHaveProperty("file");
+        expect(link).toHaveProperty("status", response.status); // Verificar el status usando response.status
+        expect(link).toHaveProperty("ok", "ok");
+      });
+    });
+  });
+});*/
+
+describe("validateLinks", () => {
+  it("debería retornar un objeto con status 'ok' si la solicitud es exitosa y el enlace es válido", async () => {
+    // Configurar el comportamiento del módulo axios burlado
+    axios.get.mockResolvedValue({
+      status: 200,
+      data: '<a href="https://www.freecodecamp.org/">Enlace</a>',
+    });
+
+    const result = await validateLinks("https://www.freecodecamp.org/");
+
+    expect(result.status).toBe(200);
+    expect(result.ok).toBe("ok");
+  });
+  it("debería retornar un objeto con status 'fail' si la solicitud es exitosa pero el enlace es inválido", async () => {
+    // Configurar el comportamiento del módulo axios burlado
+    axios.get.mockResolvedValue({
+      status: 404,
+      data: '<a href="https://www.enlace-ficticio-roto.com">Enlace</a>',
+    });
+
+    const result = await validateLinks("https://www.enlace-ficticio-roto.com");
+
+    expect(result.status).toBe(404);
+    expect(result.ok).toBe("fail");
+  });
+  it("debería retornar un objeto con status 'No Response' si no hay respuesta", () => {
+    const responseError = new Error("No Response");
+    responseError.response = undefined;
+    axios.get.mockRejectedValue(responseError);
+
+    return validateLinks("https://www.enlace-ficticio-roto.com").then(
+      (result) => {
+        expect(result).toEqual({
+          status: "No Response",
+          ok: "fail",
+        });
+      }
+    );
+  });
+});
+
+/*describe('readdirFiles', () => {
   it('debería devolver una lista de archivos en el directorio existente', () => {
     const directoryPath = './prueba'; 
     const files = readdirFiles(directoryPath);
@@ -35,10 +110,41 @@ describe('readdirFiles', () => {
     expect(files).toHaveLength(5); 
   });
 
-  it('debería devolver un array vacío para un directorio inexistente', () => {
+  
     const directoryPath = './directorio_inexistente'; 
     const files = readdirFiles(directoryPath);
 
     expect(files).toEqual([]); // Debería devolver un array vacío si el directorio no existe
   });  
 });*/
+
+describe("readdirFiles", () => {
+  // Directorio de prueba para tus archivos de prueba
+  const testDirectory = "./prueba";
+
+  it("debería devolver una lista de archivos y subdirectorios", () => {
+    const result = readdirFiles(testDirectory);
+
+    // Asegúrate de que result es un objeto con las propiedades "files" y "directories"
+    expect(result).toHaveProperty("files");
+    expect(result).toHaveProperty("directories");
+
+    // Comprueba que "files" y "directories" son arreglos
+    expect(Array.isArray(result.files)).toBe(true);
+    expect(Array.isArray(result.directories)).toBe(true);
+  });
+  it("debería devolver archivos y subdirectorios correctamente", () => {
+    const result = readdirFiles(testDirectory);
+    // Asegúrate de que algunos archivos y subdirectorios específicos estén presentes
+    expect(result.files).toContain("08-guiaweb03.md"); // Reemplaza con nombres de archivo y subdirectorios reales
+    expect(result.directories).toContain("pasos"); // Reemplaza con nombres de archivo y subdirectorios reales
+  });
+  it("debería devolver arreglos vacíos en caso de error", () => {
+    // Proporciona una ruta que no exista para forzar un error
+    const nonExistentDirectory = "./directorio/inexistente";
+    const result = readdirFiles(nonExistentDirectory);
+
+    expect(result.files).toEqual([]);
+    expect(result.directories).toEqual([]);
+  });
+});
