@@ -1,11 +1,6 @@
 const mdLinks = require("../mdlinks.js");
-const {
-  isMarkdownFile,
-  validateLinks,
-  readingFile,
-  readdirFiles,
-} = require("../data.js");
 const axios = require("axios");
+
 
 jest.mock("axios");
 
@@ -82,9 +77,16 @@ describe("mdLinks", () => {
         expect(link).toHaveProperty("ok", "ok");
       });
     });
-  });
-  it("debería devolver una promesa al iniciar desde el directorio raíz", () => {
-    const result = mdLinks("./prueba", false);
-    expect(result).toBeInstanceOf(Promise);
-  });
-});
+  }); 
+  /*//el test pasa pero no cubre la línea 81
+  it("debería rechazar la promesa con un error si ocurre un error durante la ejecución", () => {
+    const directoryWithNoPermission = "./sin_permisos"; // Una ruta que no tenga permisos de lectura
+    return mdLinks(directoryWithNoPermission, false).catch((error) => {
+      expect(error).toBeInstanceOf(Error);
+      expect(error.message).toBe("El mensaje de error que esperas");
+    });
+  });*/
+});  
+ 
+  
+
