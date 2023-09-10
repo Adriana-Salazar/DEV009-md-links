@@ -15,67 +15,71 @@ function mdLinks(directoryPath, validate) {
     return Promise.reject(new Error("La ruta no existe"));
   }
 
-  function processDirectory(dir) {
-    const filesInDirectory = readdirFiles(dir);
-    const linksPromises = [];
+  const { files, directories } = readdirFiles(absolutePath);
 
-    for (const filePath of filesInDirectory) {
-      const fullFilePath = path.join(dir, filePath);
+  const linksPromises = [];
 
-      if (fs.existsSync(fullFilePath) && isMarkdownFile(filePath)) {
-        const linkPromise = readingFile(fullFilePath)
-          .then((fileContent) => {
-            const htmlContent = md.render(fileContent);
-            const root = parse(htmlContent);
+  for (const filePath of files) {
+    const fullFilePath = path.join(absolutePath, filePath);
 
-            const links = root.querySelectorAll("a").map((anchor) => ({
-              href: anchor.getAttribute("href"),
-              text: anchor.text,
-              file: fullFilePath,
-            }));
+    if (isMarkdownFile(fullFilePath)) {
+      const linkPromise = readingFile(fullFilePath)
+        .then((fileContent) => {
+          const htmlContent = md.render(fileContent);
+          const root = parse.parse(htmlContent);
 
-            if (validate) {
-              return Promise.all(
-                links.map((link) =>
-                  validateLinks(link.href)
-                    .then((validationResult) =>
-                      Object.assign(link, validationResult)
-                    )
-                    .catch(() => {
-                      link.status = "Error";
-                      link.ok = "fail";
-                      return link;
-                    })
-                )
-              );
-            }
+          const links = root.querySelectorAll("a").map((anchor) => ({
+            href: anchor.getAttribute("href"),
+            text: anchor.text,
+            file: fullFilePath,
+          }));
 
-            return links;
-          })
-          .catch((error) => {
-            console.error(`Error al procesar ${fullFilePath}: ${error.message}`);
-            return [];
-          });
+          if (validate) {
+            return Promise.all(
+              links.map((link) =>
+                validateLinks(link.href)
+                  .then((validationResult) =>
+                    Object.assign(link, validationResult)
+                  )
+                  .catch(() => {
+                    link.status = "Error";
+                    link.ok = "fail";
+                    return link;
+                  })
+              )
+            );
+          }
 
-        linksPromises.push(linkPromise);
-      } else if (fs.statSync(fullFilePath).isDirectory()) {
-        linksPromises.push(processDirectory(fullFilePath)); // Nueva recursión para directorios
-      } else {
-        console.error(`Error: ${fullFilePath} no es un archivo Markdown`);
-      }
+          return links;
+        })
+        .catch((error) => {
+          console.error(`Error al procesar ${fullFilePath}: ${error.message}`);
+          return [];
+        });
+
+      linksPromises.push(linkPromise);
+    } else {
+      console.error(`Error: ${fullFilePath} no es un archivo Markdown`);
     }
-
-    return Promise.all(linksPromises)
-      .then((results) => {
-        const links = results.reduce((acc, current) => acc.concat(current), []);
-        return links;
-      })
-      .catch((error) => {
-        return Promise.reject(error);
-      });
   }
 
-  return processDirectory(absolutePath); // Inicia la recursión desde el directorio raíz
+  for (const subdirectory of directories) {
+    const subdirectoryPath = path.join(absolutePath, subdirectory);
+    const subdirectoryLinks = mdLinks(subdirectoryPath, validate);
+    linksPromises.push(subdirectoryLinks);
+  }
+
+  return Promise.all(linksPromises)
+    .then((results) => {
+      const allLinks = [];
+      for (const result of results) {
+        allLinks.push(...result);
+      }
+      return allLinks;
+    })
+    .catch((error) => {
+      return Promise.reject(error);
+    });
 }
 
 module.exports = mdLinks;
