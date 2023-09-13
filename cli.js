@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-const mdLinks = require(".");
+const mdLinks = require("./index.js");
 const path = require("path");
 
 let directoryPath = ""; // Inicialmente, no se especifica una ruta

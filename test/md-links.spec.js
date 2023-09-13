@@ -21,7 +21,7 @@ describe("mdLinks", () => {
     });
   });
   it("debe leer el archivo si es tipo Markdown", () => {
-    return mdLinks("./README.md").then((data) => {
+    return mdLinks("./prueba2/practicar.md").then((data) => {
       expect(data).toBeDefined();
     });
   });
