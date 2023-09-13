@@ -4,6 +4,7 @@ const {
   readingFile,
   readdirFiles,
 } = require("../data.js");
+
 const axios = require("axios");
 
 jest.mock("axios");
@@ -40,26 +41,6 @@ describe("readingFile", () => {
     });
   });
 });
-
-/*describe("validateLinks", () => {
-  it("deberia validar los links cuando el atributo validate = true", () => {
-    const response = { status: 200 }; // Simulamos una respuesta exitosa
-    axios.get.mockResolvedValue(response);
-
-    return validateLinks("./prueba2/practicar.md", true).then((links) => {
-      expect(links).toHaveLength(3);
-
-      links.forEach((link) => {
-      // Verifica que las propiedades necesarias estén presentes
-        expect(link).toHaveProperty("href");
-        expect(link).toHaveProperty("text");
-        expect(link).toHaveProperty("file");
-        expect(link).toHaveProperty("status", response.status); // Verificar el status usando response.status
-        expect(link).toHaveProperty("ok", "ok");
-      });
-    });
-  });
-});*/
 
 describe("validateLinks", () => {
   it("debería retornar un objeto con status 'ok' si la solicitud es exitosa y el enlace es válido", async () => {
@@ -101,22 +82,6 @@ describe("validateLinks", () => {
     );
   });
 });
-
-/*describe('readdirFiles', () => {
-  it('debería devolver una lista de archivos en el directorio existente', () => {
-    const directoryPath = './prueba'; 
-    const files = readdirFiles(directoryPath);
-
-    expect(files).toHaveLength(5); 
-  });
-
-  
-    const directoryPath = './directorio_inexistente'; 
-    const files = readdirFiles(directoryPath);
-
-    expect(files).toEqual([]); // Debería devolver un array vacío si el directorio no existe
-  });  
-});*/
 
 describe("readdirFiles", () => {
   // Directorio de prueba para tus archivos de prueba

@@ -1,6 +1,5 @@
-const mdLinks = require("../mdlinks.js");
+const mdLinks = require("../index.js");
 const axios = require("axios");
-
 
 jest.mock("axios");
 
@@ -77,15 +76,5 @@ describe("mdLinks", () => {
         expect(link).toHaveProperty("ok", "ok");
       });
     });
-  }); 
-  //el test pasa pero no cubre la línea 81
-  /*it("debería rechazar la promesa si ocurre un error durante la ejecución", () => {   
-    return mdLinks("./sin_permisos").catch((error) => {
-      expect(error).toBeInstanceOf(Error);
-      expect(error.message).toBe();
-    });
-  });*/
-});  
- 
-  
-
+  });
+});
