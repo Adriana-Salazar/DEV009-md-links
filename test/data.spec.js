@@ -46,8 +46,7 @@ describe("validateLinks", () => {
   it("debería retornar un objeto con status 'ok' si la solicitud es exitosa y el enlace es válido", async () => {
     // Configurar el comportamiento del módulo axios burlado
     axios.get.mockResolvedValue({
-      status: 200,
-      data: '<a href="https://www.freecodecamp.org/">Enlace</a>',
+      status: 200      
     });
 
     const result = await validateLinks("https://www.freecodecamp.org/");
@@ -58,8 +57,7 @@ describe("validateLinks", () => {
   it("debería retornar un objeto con status 'fail' si la solicitud es exitosa pero el enlace es inválido", async () => {
     // Configurar el comportamiento del módulo axios burlado
     axios.get.mockResolvedValue({
-      status: 404,
-      data: '<a href="https://www.enlace-ficticio-roto.com">Enlace</a>',
+      status: 404
     });
 
     const result = await validateLinks("https://www.enlace-ficticio-roto.com");

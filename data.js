@@ -80,12 +80,6 @@ function readdirFiles(directoryPath) {
   }
 }
 
-/*const directoryPath = './prueba';
-const result = readdirFiles(directoryPath);
-
-console.log('Archivos:', result.files);
-console.log('Subdirectorios:', result.directories);*/
-
 module.exports = {
   isMarkdownFile,
   readingFile,
