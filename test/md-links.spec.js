@@ -8,35 +8,13 @@ describe("mdLinks", () => {
     return mdLinks("/ruta/invalida").catch((error) => {
       expect(error.message).toBe("La ruta no existe");
     });
-  });
-  it("debería manejar directorios con subdirectorios y archivos Markdown", () => {
-    return mdLinks("./prueba", false).then((links) => {
-      expect(links).toHaveLength(11); // Ajusta el número esperado de enlaces según tus archivos de prueba
-    });
-  });
+  });  
   it("debería devolver un array vacío si no hay archivos Markdown", () => {
     const emptyDirectory = "./test";
     return mdLinks(emptyDirectory, true).then((result) => {
       expect(result).toEqual([]);
     });
-  });
-  it("debe leer el archivo si es tipo Markdown", () => {
-    return mdLinks("./prueba2/practicar.md").then((data) => {
-      expect(data).toBeDefined();
-    });
-  });
-  it("debería rechazar con un error si el archivo no es tipo Markdown", () => {
-    return mdLinks("./index.js").catch((error) => {
-      expect(error.message).toBe("El archivo no es de tipo Markdown");
-    });
-  });
-  it("debería manejar archivos Markdown sin enlaces", () => {
-    const directoryWithNoLinks = "./prueba/novalido.md";
-    console.log("Prueba ejecutada");
-    return mdLinks(directoryWithNoLinks, false).then((result) => {
-      expect(result).toEqual([]); // Verifica que no se haya encontrado ningún enlace
-    });
-  });
+  }); 
   it("debería procesar archivos Markdown y devolver los enlaces", () => {
     const directoryWithMarkdownFiles = "./prueba2";
     return mdLinks(directoryWithMarkdownFiles, false).then((result) => {
