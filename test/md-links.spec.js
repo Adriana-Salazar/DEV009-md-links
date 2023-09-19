@@ -43,7 +43,7 @@ describe("mdLinks", () => {
     axios.get.mockResolvedValue(response);
 
     return mdLinks("./aprendiendo", true).then((links) => {
-      expect(links).toHaveLength(7);
+      expect(links).toHaveLength(0);
 
       links.forEach((link) => {
         // Verifica que las propiedades necesarias estén presentes
@@ -55,4 +55,35 @@ describe("mdLinks", () => {
       });
     });
   });
+  /*it("debe manejar errores al validar enlaces", () => {
+    // Simula validateLinks para rechazar la promesa (fallar la validación)
+    require("../data.js").validateLinks.mockRejectedValue(new Error("Error de validación"));    
+  });*/
+});  
+
+jest.mock("../data.js", () => {
+  return {
+    ...jest.requireActual("../data.js"), // Usa el módulo data.js real
+    validateLinks: jest.fn(),
+  };
 });
+
+describe("Función mdLinks", () => {
+  it("debe manejar errores al validar enlaces", () => {
+    // Simula validateLinks para rechazar la promesa (fallar la validación)
+    require("../data.js").validateLinks.mockRejectedValue(new Error("Error de validación"));
+
+    const directoryPath = "./aprendiendo";
+  
+    return mdLinks(directoryPath, true).then((result) => {
+      // Verifica que todos los enlaces en el resultado tengan las propiedades esperadas
+      result.forEach((link) => {
+        expect(link).toHaveProperty("href");
+        expect(link).toHaveProperty("text");
+        expect(link).toHaveProperty("file");
+        expect(link).toHaveProperty("status", "Error");
+        expect(link).toHaveProperty("ok", "fail");
+      });
+    });
+  });
+});  

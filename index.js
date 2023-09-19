@@ -13,7 +13,6 @@ function mdLinks(directoryPath, validate) {
     }
 
     const { files, directories } = readdirFiles(absolutePath);
-
     const linksPromises = [];
 
     for (const filePath of files) {
