@@ -4,12 +4,12 @@ const mdLinks = require("./index.js");
 const colors = require("colors");
 
 const directoryPath = process.argv[2]; // Obtiene la ruta del directorio desde los argumentos de la línea de comandos
-const validate = process.argv.includes("--validate"); // Verifica si se pasó '--validate' como argumento
+const validate = process.argv.includes("--validate"); // Se incluye '--validate' como argumento
 const showStats = process.argv.includes("--stats"); // Se incluye '--stats' como argumento
 
 if (!validate && !showStats) {
-  // Si no se pasan opciones, establece validate en false
-  mdLinks(directoryPath, false)
+ 
+  mdLinks(directoryPath, false) //se establece validate en false
     .then((links) => {
       links.forEach((link) => {
         console.log(`href: ${link.href}`.blue);

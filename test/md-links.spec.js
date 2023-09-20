@@ -2,6 +2,12 @@ const mdLinks = require("../index.js");
 const axios = require("axios");
 
 jest.mock("axios");
+jest.mock("../data.js", () => {
+  return {
+    ...jest.requireActual("../data.js"), 
+    validateLinks: jest.fn(),
+  };
+});
 
 describe("mdLinks", () => {
   it("debería rechazar con un error si la ruta no existe", () => {
@@ -17,8 +23,7 @@ describe("mdLinks", () => {
   }); 
   it("debería procesar archivos Markdown y devolver los enlaces", () => {
     const directoryWithMarkdownFiles = "./prueba2";
-    return mdLinks(directoryWithMarkdownFiles, false).then((result) => {
-      // Verifica que result contenga los enlaces esperados
+    return mdLinks(directoryWithMarkdownFiles, false).then((result) => {      
       expect(result).toEqual([
         {
           href: "https://www.freecodecamp.org/",
@@ -55,28 +60,13 @@ describe("mdLinks", () => {
       });
     });
   });
-  /*it("debe manejar errores al validar enlaces", () => {
-    // Simula validateLinks para rechazar la promesa (fallar la validación)
-    require("../data.js").validateLinks.mockRejectedValue(new Error("Error de validación"));    
-  });*/
-});  
-
-jest.mock("../data.js", () => {
-  return {
-    ...jest.requireActual("../data.js"), // Usa el módulo data.js real
-    validateLinks: jest.fn(),
-  };
-});
-
-describe("Función mdLinks", () => {
   it("debe manejar errores al validar enlaces", () => {
     // Simula validateLinks para rechazar la promesa (fallar la validación)
     require("../data.js").validateLinks.mockRejectedValue(new Error("Error de validación"));
 
     const directoryPath = "./aprendiendo";
   
-    return mdLinks(directoryPath, true).then((result) => {
-      // Verifica que todos los enlaces en el resultado tengan las propiedades esperadas
+    return mdLinks(directoryPath, true).then((result) => {      
       result.forEach((link) => {
         expect(link).toHaveProperty("href");
         expect(link).toHaveProperty("text");
@@ -87,3 +77,5 @@ describe("Función mdLinks", () => {
     });
   });
 });  
+
+

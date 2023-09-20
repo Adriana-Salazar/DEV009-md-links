@@ -10,14 +10,12 @@ const axios = require("axios");
 jest.mock("axios");
 
 describe("isMarkdownFile", () => {
-  it("debería devolver true para archivos markdown", () => {
-    // Prueba con diferentes extensiones de archivos markdown
+  it("debería devolver true para archivos markdown", () => {    
     expect(isMarkdownFile("guia.md")).toBe(true);
     expect(isMarkdownFile("aprende.mdown")).toBe(true);
     expect(isMarkdownFile("07-milestone.text")).toBe(true);
   });
-  it("debería devolver false para archivos no markdown", () => {
-    // Prueba con archivos que no son markdown
+  it("debería devolver false para archivos no markdown", () => {    
     expect(isMarkdownFile("data.js")).toBe(false);
   });
 });
@@ -29,7 +27,7 @@ describe("readingFile", () => {
     });
   });
   it("debe leer el archivo", () => {
-    const filePath = "./prueba2/practicar.md"; // Reemplaza con la ruta correcta a un archivo existente
+    const filePath = "./prueba2/practicar.md"; 
     const expectedContent = "## Práctica Constante";
     ("La práctica es clave para mejorar. Aquí tienes algunas plataformas donde puedes practicar tus habilidades:");
     ("- [freeCodeCamp](https://www.freecodecamp.org/)·");
@@ -44,24 +42,18 @@ describe("readingFile", () => {
 
 describe("validateLinks", () => {
   it("debería retornar un objeto con status 'ok' si la solicitud es exitosa y el enlace es válido", async () => {
-    // Configurar el comportamiento del módulo axios burlado
     axios.get.mockResolvedValue({
       status: 200      
     });
-
     const result = await validateLinks("https://www.freecodecamp.org/");
-
     expect(result.status).toBe(200);
     expect(result.ok).toBe("ok");
   });
-  it("debería retornar un objeto con status 'fail' si la solicitud es exitosa pero el enlace es inválido", async () => {
-    // Configurar el comportamiento del módulo axios burlado
+  it("debería retornar un objeto con status 'fail' si la solicitud es exitosa pero el enlace es inválido", async () => {    
     axios.get.mockResolvedValue({
       status: 404
     });
-
     const result = await validateLinks("https://www.enlace-ficticio-roto.com");
-
     expect(result.status).toBe(404);
     expect(result.ok).toBe("fail");
   });
@@ -81,14 +73,11 @@ describe("validateLinks", () => {
   });
 });
 
-describe("readdirFiles", () => {
-  // Directorio de prueba para tus archivos de prueba
+describe("readdirFiles", () => {  
   const testDirectory = "./prueba";
-
   it("debería devolver una lista de archivos y subdirectorios", () => {
     const result = readdirFiles(testDirectory);
-
-    // Asegúrate de que result es un objeto con las propiedades "files" y "directories"
+    
     expect(result).toHaveProperty("files");
     expect(result).toHaveProperty("directories");
 
@@ -97,14 +86,12 @@ describe("readdirFiles", () => {
     expect(Array.isArray(result.directories)).toBe(true);
   });
   it("debería devolver archivos y subdirectorios correctamente", () => {
-    const result = readdirFiles(testDirectory);
-    // Asegúrate de que algunos archivos y subdirectorios específicos estén presentes
-    expect(result.files).toContain("08-guiaweb03.md"); // Reemplaza con nombres de archivo y subdirectorios reales
-    expect(result.directories).toContain("pasos"); // Reemplaza con nombres de archivo y subdirectorios reales
+    const result = readdirFiles(testDirectory);   
+    expect(result.files).toContain("08-guiaweb03.md"); 
+    expect(result.directories).toContain("pasos"); 
   });
-  it("debería devolver arreglos vacíos en caso de error", () => {
-    // Proporciona una ruta que no exista para forzar un error
-    const nonExistentDirectory = "./directorio/inexistente";
+  it("debería devolver arreglos vacíos en caso de error", () => {    
+    const nonExistentDirectory = "./directorio/inexistente"; //se proporciona una ruta que no existe para forzar un error
     const result = readdirFiles(nonExistentDirectory);
 
     expect(result.files).toEqual([]);
