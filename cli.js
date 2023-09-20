@@ -63,30 +63,4 @@ if (!validate && !showStats) {
 
 
 
-/*const readline = require('readline');
 
-const rl = readline.createInterface({
-  input: process.stdin,
-  output: process.stdout
-});
-
-//rl.question('Ingrese la ruta del directorio: ', (directoryPath) => {
-  rl.question('Si desea validar los enlaces, ingrese "--validate". De lo contrario, presione Enter: ', (directoryPath, answer) => {
-    const validate = answer.trim() === '--validate';
-    mdLinks(directoryPath, validate)
-      .then((links) => {
-        links.forEach((link) => {
-          console.log(`href: ${link.href}\ntext: ${link.text}\nfile: ${link.file}`);
-          if (validate) {
-            console.log(`status: ${link.status || 'N/A'}\nok: ${link.ok ? 'ok' : 'fail'}`);
-          }
-          console.log('');
-        });
-        rl.close();
-      })
-      .catch((error) => {
-        console.error('Error:', error.message);
-        rl.close();
-      });
-  });
-//});*/
