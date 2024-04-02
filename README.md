@@ -14,7 +14,7 @@
 
 ## 1. _Preámbulo_
 
-[Markdown](https://es.wikipedia.org/wiki/Markdown) Markdown es un lenguaje de marcado sencillo que sirve para agregar formato, vínculos e imágenes con facilidad al texto simple; en principio, fue pensado para elaborar textos cuyo destino iba a ser la web con más rapidez y sencillez que si estuviésemos empleando directamente HTML.  Actualmente es usado en muchísimas plataformas que manejan texto plano (GitHub, foros, blogs, etc.) y es muy común encontrar varios archivos en ese formato en cualquier tipo de
+[Markdown](https://es.wikipedia.org/wiki/Markdown) es un lenguaje de marcado sencillo que sirve para agregar formato, vínculos e imágenes con facilidad al texto simple; en principio, fue pensado para elaborar textos cuyo destino iba a ser la web con más rapidez y sencillez que si estuviésemos empleando directamente HTML.  Actualmente es usado en muchísimas plataformas que manejan texto plano (GitHub, foros, blogs, etc.) y es muy común encontrar varios archivos en ese formato en cualquier tipo de
 repositorio (empezando por el tradicional `README.md`).
 
 Estos archivos `Markdown` normalmente contienen _links_ (vínculos/ligas) que
